@@ -235,10 +235,10 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def get_todo():
     # Une la carpeta base con tu archivo
-    path = os.path.join(BASE_DIR, 'parquet_total', 'dataset_total_predNO2.parquet')
+    #path = os.path.join(BASE_DIR, 'parquet_total', 'dataset_total_predNO2.parquet')
     # 2. Mostramos en la app qué ruta está intentando leer exactamente
-    st.info(f"Intentando cargar desde: {path}")
-    df = pd.read_parquet(path)
+    #st.info(f"Intentando cargar desde: {path}")
+    #df = pd.read_parquet(path)
 
-    #df = pd.read_parquet('parquet_total/dataset_total_predNO2.parquet')
+    df = pd.read_parquet('parquet_total/dataset_total_predNO2.parquet')
     return df.sort_values("timestamp")
