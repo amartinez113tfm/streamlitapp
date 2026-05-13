@@ -197,7 +197,7 @@ def get_mongodb_client(): pass
 
 #funcion que lee del parquet total con todos los datos y predicciones
 def get_datos_parquetTotal(codigo_sel, pollutant_sel, fecha_inicio, fecha_fin):
-    df = pd.read_parquet('parquet_total\dataset_total_predNO2.parquet')
+    df = pd.read_parquet('parquet_total/dataset_total_predNO2.parquet')
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     fecha_inicio = pd.to_datetime(fecha_inicio)
     fecha_fin = pd.to_datetime(fecha_fin)
