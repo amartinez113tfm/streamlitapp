@@ -63,13 +63,15 @@ def main():
     st.sidebar.subheader("Rango de fechas")
     fecha_inicio = st.sidebar.date_input(
             "Fecha inicio", 
-            value=datetime.now() - timedelta(days=7),
+            #value=datetime.now() - timedelta(days=7),
+            value=datetime(2021, 3, 1),
             max_value=datetime.now(),
             key="hist_f_inicio"
         )
     fecha_fin = st.sidebar.date_input(
             "Fecha fin", 
-            value=datetime.now(),
+            #value=datetime.now(),
+            value=datetime(2021, 3, 8),
             max_value=datetime.now(),
             key="hist_f_fin"
         )
