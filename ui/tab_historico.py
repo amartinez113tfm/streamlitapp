@@ -855,9 +855,9 @@ def render_content(pollutant_sel,codigo_sel,fecha_inicio,fecha_fin,seleccionados
             return
         with colOtra:  
             # En tu Streamlit:
-            fig_scatter = dibujar_scatter_rendimiento(df, 'no2', 'NO2')
-            st.plotly_chart(fig_scatter, use_container_width=True) # Mantener False para respetar el tamaño
-
+            #fig_scatter = dibujar_scatter_rendimiento(df, 'no2', 'NO2')
+            #st.plotly_chart(fig_scatter, use_container_width=True) # Mantener False para respetar el tamaño
+            st.dataframe(df.head(2))
 
                     
 
