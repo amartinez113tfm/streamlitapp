@@ -1,8 +1,12 @@
 [theme]
+# Color principal para botones y componentes activos (tu azul)
 primaryColor = "#00d1ff"
-backgroundColor = "#0e1117"
-secondaryBackgroundColor = "#262730"
-textColor = "#fafafa"
+# Fondo principal en blanco
+backgroundColor = "#ffffff"
+# Fondo de la barra lateral y tarjetas en un gris muy claro
+secondaryBackgroundColor = "#f0f2f6"
+# Color del texto en un tono oscuro para que contraste bien
+textColor = "#31333F"
 
 [client]
 toolbarMode = "hidden"
