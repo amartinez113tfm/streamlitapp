@@ -43,6 +43,54 @@ import plotly.graph_objects as go
 
 import plotly.express as px
 
+def dibujar_scatter_rendimiento(df_filtrado, col_real, contaminante_sel):
+    # No usamos tildes en los comentarios
+    st.dataframe(df_filtrado.head(5))
+    # 1. Crear el scatter plot basico con el tema oscuro
+    fig = px.scatter(
+                    df_filtrado, 
+                    x=col_real, 
+                    y='pred_lgbmNO2', 
+                    opacity=0.3, # Transparencia para ver densidad
+                    color_discrete_sequence=['#4A90E2'], # Azul
+                    labels={col_real: f'Valor Real {contaminante_sel}', 
+                            'pred_lgbmNO2': f'Prediccion {contaminante_sel}'},
+                    template='plotly_dark' # <--- ESTO CAMBIA TODO AL MODO OSCURO
+                )
+
+    # 2. Añadir la linea de referencia (perfecta)
+    max_valor = max(df_filtrado[col_real].max(), df_filtrado['pred_lgbmNO2'].max())
+                
+    fig.add_trace(go.Scatter(
+                    x=[0, max_valor], 
+                    y=[0, max_valor], 
+                    mode='lines', 
+                    line=dict(color='#E05A5A', dash='dash', width=2), # Rojo discontinuo
+                    name='Prediccion Perfecta'
+                ))
+
+    # 3. Ajustar el diseño final (tamaños, margenes, titulos, etc)
+    fig.update_layout(
+                    title=f'Comparativa: Real vs Prediccion ({contaminante_sel})',
+                    title_font_size=16,
+                    xaxis_title=f'Valor Real {contaminante_sel} (µg/m³)',
+                    yaxis_title=f'Prediccion {contaminante_sel} (µg/m³)',
+                    xaxis=dict(range=[0, max_valor*1.05]), # Pequeño margen
+                    yaxis=dict(range=[0, max_valor*1.05]),
+                    width=500, # Tamaño inicial controlado para que no salga gigante
+                    height=500,
+                    margin=dict(l=50, r=50, t=80, b=50), # Margenes para titulos
+                    legend=dict(x=0.05, y=0.95), # Leyenda dentro del grafico
+                    paper_bgcolor='black', # Fondo de papel negro
+                    plot_bgcolor='black' # Fondo de trazado negro
+                )
+                
+    # Ajustar tamaño de fuente de los ejes
+    fig.update_xaxes(tickfont_size=10, title_font_size=12)
+    fig.update_yaxes(tickfont_size=10, title_font_size=12)
+
+    return fig
+
 @st.cache_data
 def dibujar_heatmap_comportamiento(df_filtrado, contaminante_sel):
     # No usamos tildes en los comentarios
@@ -82,8 +130,8 @@ def dibujar_heatmap_comportamiento(df_filtrado, contaminante_sel):
 
     # 5. Ajustes esteticos para fondo negro y alineacion
     fig.update_layout(
-        paper_bgcolor='black',
-        plot_bgcolor='black',
+        paper_bgcolor='#f0f2f6',
+        plot_bgcolor='#f0f2f6',
         font=dict(color='white'),
         coloraxis_colorbar=dict(title="µg/m³"),
         xaxis=dict(tickmode='linear', tick0=0, dtick=2), # Muestra las horas de 2 en 2
@@ -551,12 +599,12 @@ def render_radar_chart(df, contaminante):
         polar=dict(
             bgcolor="rgba(0,0,0,0)",
             radialaxis=dict(visible=True, range=[0, 1], gridcolor="gray", showticklabels=False),
-            angularaxis=dict(gridcolor="gray", linecolor="white", tickfont=dict(color="white"))
+            angularaxis=dict(gridcolor="gray", linecolor="white", tickfont=dict(color="#31333F"))
         ),
         showlegend=True,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="white"),
+        font=dict(color="#31333F"),
         margin=dict(l=80, r=80, t=20, b=20)
     )
 
@@ -802,60 +850,10 @@ def render_content(pollutant_sel,codigo_sel,fecha_inicio,fecha_fin,seleccionados
         
         colMC, colOtra  = st.columns(2)
         with colMC:
-            #fig_plotly = dibujar_matriz_plotly(cm, UMBRALES[pollutant_sel.lower()])
-            #st.plotly_chart(fig_plotly, use_container_width=True)
+            fig_plotly = dibujar_matriz_plotly(cm, UMBRALES[pollutant_sel.lower()])
+            st.plotly_chart(fig_plotly, use_container_width=True)
             return
-        with colOtra:
-
-
-            def dibujar_scatter_rendimiento(df_filtrado, col_real, contaminante_sel):
-                # No usamos tildes en los comentarios
-                
-            # 1. Crear el scatter plot basico con el tema oscuro
-                fig = px.scatter(
-                    df_filtrado, 
-                    x=col_real, 
-                    y='pred_lgbmNO2', 
-                    opacity=0.3, # Transparencia para ver densidad
-                    color_discrete_sequence=['#4A90E2'], # Azul
-                    labels={col_real: f'Valor Real {contaminante_sel}', 
-                            'pred_lgbmNO2': f'Prediccion {contaminante_sel}'},
-                    template='plotly_dark' # <--- ESTO CAMBIA TODO AL MODO OSCURO
-                )
-
-                # 2. Añadir la linea de referencia (perfecta)
-                max_valor = max(df_filtrado[col_real].max(), df_filtrado['pred_lgbmNO2'].max())
-                
-                fig.add_trace(go.Scatter(
-                    x=[0, max_valor], 
-                    y=[0, max_valor], 
-                    mode='lines', 
-                    line=dict(color='#E05A5A', dash='dash', width=2), # Rojo discontinuo
-                    name='Prediccion Perfecta'
-                ))
-
-                # 3. Ajustar el diseño final (tamaños, margenes, titulos, etc)
-                fig.update_layout(
-                    title=f'Comparativa: Real vs Prediccion ({contaminante_sel})',
-                    title_font_size=16,
-                    xaxis_title=f'Valor Real {contaminante_sel} (µg/m³)',
-                    yaxis_title=f'Prediccion {contaminante_sel} (µg/m³)',
-                    xaxis=dict(range=[0, max_valor*1.05]), # Pequeño margen
-                    yaxis=dict(range=[0, max_valor*1.05]),
-                    width=500, # Tamaño inicial controlado para que no salga gigante
-                    height=500,
-                    margin=dict(l=50, r=50, t=80, b=50), # Margenes para titulos
-                    legend=dict(x=0.05, y=0.95), # Leyenda dentro del grafico
-                    paper_bgcolor='black', # Fondo de papel negro
-                    plot_bgcolor='black' # Fondo de trazado negro
-                )
-                
-                # Ajustar tamaño de fuente de los ejes
-                fig.update_xaxes(tickfont_size=10, title_font_size=12)
-                fig.update_yaxes(tickfont_size=10, title_font_size=12)
-
-                return fig
-            
+        with colOtra:  
             # En tu Streamlit:
             fig_scatter = dibujar_scatter_rendimiento(df, 'no2', 'NO2')
             st.plotly_chart(fig_scatter, use_container_width=True) # Mantener False para respetar el tamaño
