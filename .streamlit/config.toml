@@ -9,4 +9,4 @@ secondaryBackgroundColor = "#f0f2f6"
 textColor = "#31333F"
 
 [client]
-toolbarMode = "hidden"
+toolbarMode = "auto"
