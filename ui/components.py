@@ -289,51 +289,68 @@ def render_historical_trends_chart_2(df, contaminante):
     activas = estaciones_con_datos[estaciones_con_datos >= 1].index.tolist()
     df_final = df_trend[df_trend['Nombre Estación'].isin(activas)]
 
-    # 5. CREACIÓN DEL GRÁFICO DE BARRAS
-    chart = alt.Chart(df_final).mark_bar(
-        cornerRadiusTopLeft=3,
-        cornerRadiusTopRight=3,
-        size=20 # Grosor de la barra
-    ).encode(
+# 1. CAPA BASE: Definimos solo los ejes comunes X e Y
+    base = alt.Chart(df_final).encode(
         x=alt.X('Año:N', title='Año', axis=alt.Axis(labelAngle=0)),
         y=alt.Y(f'{col_cont}:Q', 
                 title=None, 
-                scale=alt.Scale(zero=True), # En barras es mejor empezar desde 0
-                axis=alt.Axis(gridOpacity=0.1)),
+                scale=alt.Scale(zero=True),
+                axis=alt.Axis(grid=True, gridOpacity=0.4)), # Grid horizontal nitido
         color=alt.Color('Nombre Estación:N', 
                         scale=alt.Scale(scheme='tableau20'), 
                         legend=None),
+        tooltip=['Año', 'Nombre Estación', alt.Tooltip(f'{col_cont}:Q', format='.2f')]
+    )
+
+    # 2. DEFINICIÓN DE COMPONENTES INDIVIDUALES
+    linea = base.mark_line(strokeWidth=4)
+    puntos = base.mark_point(filled=True, size=60)
+    
+    texto_valores = base.mark_text(
+        align='center',
+        baseline='bottom',
+        dy=-10,
+        fontSize=13,
+        fontWeight='bold',
+        color='white'
+    ).encode(
+        text=alt.Text(f'{col_cont}:Q', format='.1f')
+    )
+
+    # 3. COMBINACIÓN CORRECTA DE MÉTODOS:
+    # Primero unimos las capas, segundo aplicamos propiedades a la celda, y al final facetamos
+    chart = (linea + puntos + texto_valores).properties(
+        width='container',
+        height=100 # 🟢 Se define aqui el tamaño de cada mini-grafico individual
+    ).facet(
         row=alt.Row('Nombre Estación:N', 
                     title=None, 
                     header=alt.Header(
-                        labelColor='white', 
+                        labelColor='gray', 
                         labelAngle=0, 
                         labelAlign='left',
-                        labelFontSize=12,
-                        labelFontWeight='bold'
-                    )),
-        tooltip=['Año', 'Nombre Estación', alt.Tooltip(f'{col_cont}:Q', format='.2f')]
-    ).properties(
-        width=650,
-        height=120 # Aumentamos un poco la altura para que las barras luzcan mejor
+                        labelFontSize=15,
+                        labelFontWeight='bold',
+                        labelPadding=15
+                    ))
     ).configure_view(
         stroke=None
     ).configure_axis(
         labelColor='white',
         titleColor='white',
-        gridColor='#333333'
+        gridColor='#555555' # Color gris claro para destacar el grid horizontal
     ).configure(
         background='transparent'
     )
 
     st.altair_chart(chart, use_container_width=True)
 
+    
 
 import plotly.graph_objects as go
 import pandas as pd
 
-import plotly.graph_objects as go
-import pandas as pd
+
 
 def render_historical_candlestick_trimestral(df, contaminante):
     st.subheader(f"🕯️ Variabilidad Trimestral: {contaminante.upper()}")
@@ -520,3 +537,337 @@ def render_ridge_plot(df, contaminante):
 
     # 5. Renderizar en Streamlit
     st.plotly_chart(fig, use_container_width=True)
+
+
+
+def render_historical_overages_chart(df_filtrado, col_cont):
+    """
+    Genera y muestra una grafica de barras horizontales en Altair con las veces
+    que se han superado los limites legales por estacion para el año activo.
+    df_filtrado: DataFrame ya filtrado con 'Veces Superado' > 0, el año y contaminante elegidos.
+    """
+    if df_filtrado.empty:
+        st.info(f"✨ Ninguna estacion registro superaciones de los limites para {col_cont} en este periodo.")
+        return
+
+    # 1. CAPA BASE: Definimos los ejes comunes X e Y (SIN meter el row todavia)
+    # Colocamos el numero de veces en el eje X para que la barra crezca horizontalmente
+    base = alt.Chart(df_filtrado).encode(
+        x=alt.X('Veces Superado:Q', 
+                title='Nº Veces Superado al Año',
+                axis=alt.Axis(
+                    grid=True, 
+                    gridOpacity=0.4, 
+                    tickMinStep=1, # Fuerza a que los pasos del grid sean enteros (1, 2, 3...)
+                    labelColor='white',
+                    titleColor='white'
+                )),
+        # Dejamos el eje Y sin titulos ni etiquetas porque el nombre se leera en el Header lateral
+        y=alt.Y('Estación:N', title=None, axis=None),
+        color=alt.Color('Estación:N', 
+                        scale=alt.Scale(scheme='tableau20'), 
+                        legend=None),
+        tooltip=['Año', 'Estación', 'Contaminante', 'Límite Aplicado', 'Veces Superado']
+    )
+
+    # 2. DEFINICIÓN DE LA BARRA HORIZONTAL CON BORDES REDONDEADOS
+    barras = base.mark_bar(
+        cornerRadiusTopRight=3,
+        cornerRadiusBottomRight=3,
+        size=16 # Espesor elegante de la barra
+    )
+
+    # 3. CAPA DE TEXTO EN LOS EXTREMOS (Opcional pero muy visual)
+    # Muestra el numero exacto al final de cada barra para que no haya que adivinar con el grid
+    texto_valores = base.mark_text(
+        align='left',
+        baseline='middle',
+        dx=5, # Desplazamiento de 5 pixeles a la derecha de la barra
+        fontSize=11,
+        fontWeight='bold',
+        color='white'
+    ).encode(
+        text=alt.Text('Veces Superado:Q')
+    )
+
+    # 4. UNIÓN DE CAPAS, DIMENSIONES Y FACETADO (El orden que exige Altair)
+    chart = (barras + texto_valores).properties(
+        width=325, # Ancho idéntico al de tu grafica de lineas para que queden simetricas en las columnas
+        height=60  # Altura de 60px por estacion, clavado a tu diseño actual
+    ).facet(
+        row=alt.Row('Estación:N', 
+                    title=None, 
+                    header=alt.Header(
+                        labelColor='gray', 
+                        labelAngle=0, 
+                        labelAlign='left',
+                        labelFontSize=12,
+                        labelFontWeight='bold'
+                    ))
+    ).configure_view(
+        stroke=None
+    ).configure_axis(
+        gridColor='#555555' # Mismo gris claro para el grid horizontal de fondo
+    ).configure(
+        background='transparent'
+    )
+
+    # 5. Renderizado final en Streamlit adaptándose al contenedor de la columna
+    st.altair_chart(chart, use_container_width=True)
+
+
+import altair as alt
+import streamlit as st
+
+def render_historical_overages_trends(df_filtrado, col_cont):
+    """
+    Genera y muestra una grafica de lineas facetada por estacion para el historico
+    de superaciones de limites, variando el color por año y mostrando el valor de cada uno.
+    df_filtrado: DataFrame con 'Veces Superado' > 0 (historico completo de años).
+    """
+    st.subheader(f"📊 Superación de límites legales {col_cont.upper()}: {df_filtrado['Límite Aplicado'].iloc[0]}")
+    if df_filtrado.empty:
+        st.info(f"✨ Ninguna estacion registro superaciones de los limites para {col_cont} en el historico.")
+        return
+
+    # 1. CAPA BASE: Definimos los ejes comunes X e Y (SIN meter el row todavia)
+    # Forzamos a que el Año sea de tipo Ordinal (O) o Nominal (N) para los colores
+    base = alt.Chart(df_filtrado).encode(
+        x=alt.X('Año:O', title='Año', axis=alt.Axis(labelAngle=0, labelColor='black', titleColor='white')),
+        y=alt.Y('Veces Superado:Q', 
+                title=None, 
+                scale=alt.Scale(zero=True),
+                axis=alt.Axis(grid=True, gridOpacity=0.4, labelColor='white', titleColor='white')),
+        tooltip=['Año', 'Estación', 'Contaminante', 'Límite Aplicado', 'Veces Superado']
+    )
+
+    # 2. CAPA DE LÍNEA: Conecta los años de forma continua
+    # Usamos un color base fijo (gris claro) para unir el trazado de la tendencia temporal
+    linea = base.mark_line(
+        strokeWidth=2.5,
+        color='#A0AEC0',
+        opacity=0.6
+    )
+
+    # 3. CAPA DE PUNTOS: Cambia de color segun el año
+    puntos = base.mark_point(
+        filled=True, 
+        size=45
+    ).encode(
+        color=alt.Color('Año:N', scale=alt.Scale(scheme='tableau10'), legend=None)
+    )
+    
+    # 4. CAPA DE TEXTO: Muestra el valor numerico encima de cada año y cambia de color
+    texto_valores = base.mark_text(
+        align='center',
+        baseline='bottom',
+        dy=-8, # Desplazamiento hacia arriba del punto
+        fontSize=10,
+        fontWeight='bold'
+    ).encode(
+        text=alt.Text('Veces Superado:Q', format='d'), # Formato entero
+        color=alt.Color('Año:N', scale=alt.Scale(scheme='tableau10'), legend=None)
+    )
+
+    # 5. UNIÓN DE CAPAS, DIMENSIONES Y FACETADO POR ESTACIÓN (Igual a tu captura)
+    chart = (linea + puntos + texto_valores).properties(
+        width=325, # Ancho identico para mantener la simetria en paralelo
+        height=60  # Perfil bajo vertical (60px) por cada estacion
+    ).facet(
+        row=alt.Row('Estación:N', 
+                    title=None, 
+                    header=alt.Header(
+                        labelColor='gray', 
+                        labelAngle=0, 
+                        labelAlign='left',
+                        labelFontSize=12,
+                        labelFontWeight='bold'
+                    ))
+    ).configure_view(
+        stroke=None
+    ).configure_axis(
+        gridColor='#555555' # Mismo tono de rejilla horizontal
+    ).configure(
+        background='transparent'
+    )
+
+    # 6. Renderizado final en Streamlit
+    st.altair_chart(chart, use_container_width=True)
+
+
+
+
+def render_historical_overages_trends_2(df_filtrado, col_cont):
+    """
+    Genera la gráfica de líneas de superaciones habilitando la selección por clic.
+    Devuelve una tupla: (objeto_chart, seleccion_altair)
+    """
+    if df_filtrado.empty:
+        st.info(f"✨ Ninguna estación registró superaciones de los límites para {col_cont} en el histórico.")
+        return None, None
+
+    limite_legal_texto = df_filtrado['Límite Aplicado'].iloc[0]
+    st.markdown(f"**📌 Criterio evaluado:** {limite_legal_texto}")
+
+    # 🟢 1. CREAR EL PARAMETRO DE SELECCIÓN DE ALTAIR
+    # Capturará el 'Año' y la 'Estación' cuando el usuario haga clic en un nodo
+    seleccion = alt.selection_point(
+        fields=['Año', 'Estación'], 
+        on='click',
+        name='selector_clic'
+    )
+
+    # 2. CAPA BASE
+    base = alt.Chart(df_filtrado).encode(
+        x=alt.X('Año:O', title='Año', axis=alt.Axis(labelAngle=0, labelColor='white', titleColor='white')),
+        y=alt.Y('Veces Superado:Q', 
+                title=None, 
+                scale=alt.Scale(zero=True),
+                axis=alt.Axis(grid=True, gridOpacity=0.4, labelColor='white', titleColor='white')),
+        tooltip=['Año', 'Estación', 'Contaminante', 'Límite Aplicado', 'Veces Superado']
+    )
+
+    # 3. CAPA DE LÍNEA
+    linea = base.mark_line(strokeWidth=2.5, color='#A0AEC0', opacity=0.6)
+
+    # 4. CAPA DE PUNTOS (Vinculada a la selección y cambia opacidad si no está seleccionado)
+    puntos = base.mark_point(
+        filled=True, 
+        size=70 # Un pelín más grande para facilitar el clic físico
+    ).encode(
+        color=alt.Color('Año:N', scale=alt.Scale(scheme='tableau10'), legend=None),
+        opacity=alt.condition(seleccion, alt.value(1.0), alt.value(0.25)) # Efecto visual al clicar
+    ).add_params(
+        seleccion # 🟢 Acoplamos el escuchador de clics aquí
+    )
+    
+    # 5. CAPA DE TEXTO
+    texto_valores = base.mark_text(
+        align='center', baseline='bottom', dy=-10, fontSize=10, fontWeight='bold'
+    ).encode(
+        text=alt.Text('Veces Superado:Q', format='d'),
+        color=alt.Color('Año:N', scale=alt.Scale(scheme='tableau10'), legend=None),
+        opacity=alt.condition(seleccion, alt.value(1.0), alt.value(0.3))
+    )
+
+    # 6. UNIÓN Y FACETADO
+    chart = (linea + puntos + texto_valores).properties(
+        width=325, height=60 
+    ).facet(
+        row=alt.Row('Estación:N', title=None, 
+                    header=alt.Header(labelColor='gray', labelAlign='left', labelFontSize=12, labelFontWeight='bold'))
+    ).configure_view(
+        stroke=None
+    ).configure_axis(
+        gridColor='#555555'
+    ).configure(
+        background='transparent'
+    )
+
+    return chart, seleccion
+
+# --- Dentro del archivo donde guardas tus funciones de graficos (ej. co.py o similar) ---
+
+# --- Dentro de ui/components.py ---
+
+def render_historical_overages_trends_3(df_superaciones, pollutant_sel):
+    """
+    Genera el grafico de barras horizontales usando las columnas reales 
+    del dataframe: 'Veces Superado' y la columna de la estacion.
+    """
+    if df_superaciones is None or df_superaciones.empty:
+        return None, None
+
+    # Copiamos para no alterar el dataframe original por referencia
+    df_chart = df_superaciones.copy()
+
+    # 1. Normalizacion de nombres de columnas para asegurar compatibilidad
+    # Si la columna viene como 'Veces Superado', la mapeamos internamente
+    col_valores = 'Veces Superado' if 'Veces Superado' in df_chart.columns else df_chart.columns[-1]
+    
+    # Nos aseguramos de que existan las columnas 'Año' y 'Estación' con tilde para el selector de Streamlit
+    if 'Año' not in df_chart.columns and 'Anio' in df_chart.columns:
+        df_chart = df_chart.rename(columns={'Anio': 'Año'})
+    elif 'Año' not in df_chart.columns:
+        # Si no viene el año, asumimos que puede extraerse o venir en otra columna
+        df_chart['Año'] = 2019 # Valor por defecto de respaldo si no existiera
+        
+    # Detectamos la columna que contiene los nombres de las estaciones (Barrio del Pilar, Plaza Eliptica, etc.)
+    col_estacion = None
+    for c in df_chart.columns:
+        if c in ['Estación', 'Estacion', 'Nombre Estación', 'Nombre']:
+            col_estacion = c
+            break
+    
+    if col_estacion is None:
+        # Si viene oculta o como texto suelto, buscamos la primera columna de texto
+        col_estacion = df_chart.select_dtypes(include=['object']).columns[0]
+        
+    # Renombramos a 'Estación' para que el selector por clic de Streamlit no se rompa
+    df_chart = df_chart.rename(columns={col_estacion: 'Estación'})
+
+    # 2. Definimos el selector de seleccion por clic para las barras horizontales
+    selector_clic = alt.selection_point(
+        name="selector_clic",
+        fields=["Año", "Estación"],
+        on="click"
+    )
+
+    # 3. CAPA BASE: Vinculamos los ejes usando los nombres reales de las columnas
+    base = alt.Chart(df_chart).encode(
+        x=alt.X(f'{col_valores}:Q', 
+                title='Nº de Superaciones',
+                axis=alt.Axis(grid=True, labelFontSize=12, titleFontSize=13)),
+        y=alt.Y('Año:O', 
+                title=None,
+                axis=alt.Axis(labelFontSize=12)),
+        color=alt.condition(
+            selector_clic,
+            alt.Color('Estación:N', scale=alt.Scale(scheme='tableau20'), legend=None),
+            alt.value('lightgray') # Cambia a gris al seleccionar otra barra
+        ),
+        tooltip=['Año', 'Estación', alt.Tooltip(f'{col_valores}:Q', title='Superaciones')]
+    ).add_params(
+        selector_clic
+    )
+
+    # 4. COMPONENTES: Barras con esquinas suavizadas + texto del valor a la derecha
+    barras = base.mark_bar(cornerRadiusEnd=3, height=16)
+    
+    texto_valores = base.mark_text(
+        align='left',
+        baseline='middle',
+        dx=6,
+        fontSize=12,
+        fontWeight='bold',
+        color='white'
+    ).encode(
+        text=alt.Text(f'{col_valores}:Q', format='.0f')
+    )
+
+    # 5. COMBINACIÓN Y FACETADO POR ESTACIÓN
+    chart_final = (barras + texto_valores).properties(
+        width='container',
+        height=75 # Altura perfecta para que cada barra respire por año
+    ).facet(
+        row=alt.Row('Estación:N', 
+                    title=None, 
+                    header=alt.Header(
+                        labelColor='gray', 
+                        labelAngle=0, 
+                        labelAlign='left',
+                        labelFontSize=14,
+                        labelFontWeight='bold',
+                        labelPadding=12
+                    ))
+).configure_view(
+        stroke=None
+    ).configure_axis(
+        labelColor='white',
+        titleColor='white',
+        gridColor='#555555'
+    ).configure(
+        background='transparent'
+    )
+
+    return chart_final, selector_clic

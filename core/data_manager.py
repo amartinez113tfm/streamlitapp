@@ -5,15 +5,110 @@ import os
 from datetime import datetime, time
 from pandas import json_normalize
 
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+
 # --- CONFIGURACIÓN DE RUTAS ---
 PATH_AIRE = "parquet_aire"
 PATH_METEO = "parquet_meteo"
 PATH_TRAFICO = "parquet_trafico"
 
 
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix
+
+
+# Diccionario con las coordenadas reales de las estaciones de Madrid
+DICC_ESTACIONES = {
+    4:  {"nombre": "Plaza de España", "lat": 40.423853, "lon": -3.712257},
+    8:  {"nombre": "Escuelas Aguirre", "lat": 40.421553, "lon": -3.682319},
+    16:  {"nombre": "Arturo Soria", "lat": 40.3947, "lon": -3.7318},
+    18: {"nombre": "Farolillo", "lat": 40.419358, "lon": -3.747347},
+    24: {"nombre": "Casa de Campo", "lat": 40.419358, "lon": -3.747347},
+    35: {"nombre": "Plaza del Carmen", "lat": 40.419208, "lon": -3.703164},
+    36: {"nombre": "Moratalaz", "lat": 40.407983, "lon": -3.645314},
+    38: {"nombre": "Cuatro Caminos", "lat": 40.445544, "lon": -3.707131},
+    39: {"nombre": "Barrio del Pilar", "lat": 40.478233, "lon": -3.711542},
+    54: {"nombre": "Ensanche de Vallecas", "lat": 40.372833, "lon": -3.616342},
+    56: {"nombre": "Plaza Elíptica", "lat": 40.385039, "lon": -3.718692},
+    58: {"nombre": "El Pardo", "lat": 40.521822, "lon": -3.774536},
+    59: {"nombre": "Juan Carlos I", "lat": 40.465250, "lon": -3.610514}
+}
+
+import pandas as pd
+import numpy as np
+
+def calcular_superaciones_anuales(df):
+    """
+    Calcula el número de veces al año que cada estación supera los límites legales.
+    - NO2 y O3: Evaluación horaria (picos de contaminación).
+    - PM10 y PM2.5: Evaluación diaria (medias de 24h) según directivas y OMS.
+    """
+    # 1. Asegurar formato datetime en el timestamp y extraer el año
+    if not pd.api.types.is_datetime64_any_dtype(df['timestamp']):
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+    
+    df_analisis = df.copy()
+    df_analisis['Anio'] = df_analisis['timestamp'].dt.year
+    df_analisis['Fecha_Dia'] = df_analisis['timestamp'].dt.date # Para la agrupación diaria
+    
+    # 2. Definir los límites normativos y su tipo de métrica
+    CONFIG_LIMITES = {
+        'no2': {'limite': 200, 'tipo': 'horario', 'unidades': 'µg/m³ (Horario)'},
+        'o3':  {'limite': 180, 'tipo': 'horario', 'unidades': 'µg/m³ (Horario)'},
+        'pm10': {'limite': 50,  'tipo': 'diario',  'unidades': 'µg/m³ (Media 24h)'},
+        'pm2_5': {'limite': 15, 'tipo': 'diario',  'unidades': 'µg/m³ (Media 24h)'} # Criterio OMS
+    }
+    
+    # Identificar todas las columnas de las estaciones (one-hot encoding)
+    columnas_estaciones = [c for c in df_analisis.columns if c.startswith('estacion_id_')]
+    
+    resultados = []
+    
+    # 3. Iterar por Año, Contaminante y Estación
+    for anio, df_anio in df_analisis.groupby('Anio'):
+        for contaminante, config in CONFIG_LIMITES.items():
+            # Si el contaminante no existe en el DataFrame, saltamos al siguiente
+            if contaminante not in df_anio.columns:
+                continue
+                
+            limite = config['limite']
+            tipo_calculo = config['tipo']
+            
+            for col_estacion in columnas_estaciones:
+                id_num = int(col_estacion.split('_')[-1])
+                # Obtenemos el nombre real usando tu diccionario global DICC_ESTACIONES
+                nombre_estacion = DICC_ESTACIONES.get(id_num, {}).get('nombre', f"Estación {id_num}")
+                
+                # Filtrar los registros donde esta estación específica estuvo activa (valor == 1)
+                df_estacion = df_anio[df_anio[col_estacion] == 1]
+                
+                if not df_estacion.empty:
+                    
+                    # 🟢 CASO A: EVALUACIÓN DIARIA (Para PM10 y PM2.5)
+                    if tipo_calculo == 'diario':
+                        # Agrupamos por día para obtener la media de 24 horas reales de esa estación
+                        df_diario = df_estacion.groupby('Fecha_Dia')[contaminante].mean().reset_index()
+                        # Contamos cuántos días enteros superaron el umbral
+                        num_superaciones = (df_diario[contaminante] > limite).sum()
+                    
+                    # 🟢 CASO B: EVALUACIÓN HORARIA (Para NO2 y O3)
+                    else:
+                        # Contamos directamente las filas (horas) individuales que superan el límite
+                        num_superaciones = (df_estacion[contaminante] > limite).sum()
+                    
+                    # Guardamos el registro consolidado anual
+                    resultados.append({
+                        "Año": anio,
+                        "Estación": nombre_estacion,
+                        "Contaminante": contaminante.upper().replace('_', '.'), # Cambia PM2_5 a PM2.5
+                        "Límite Aplicado": f"{limite} {config['unidades']}",
+                        "Veces Superado": int(num_superaciones)
+                    })
+                    
+    # Convertimos la lista de resultados en un DataFrame limpio listo para Altair
+    df_superaciones = pd.DataFrame(resultados)
+    return df_superaciones
+
 
 def obtener_matriz_confusion(df_filtrado, col_real, limite):
     # Creamos las etiquetas binarias

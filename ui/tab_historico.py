@@ -850,8 +850,8 @@ def render_content(pollutant_sel,codigo_sel,fecha_inicio,fecha_fin,seleccionados
         
         colMC, colOtra  = st.columns(2)
         with colMC:
-            fig_plotly = dibujar_matriz_plotly(cm, UMBRALES[pollutant_sel.lower()])
-            st.plotly_chart(fig_plotly, use_container_width=True)
+#            fig_plotly = dibujar_matriz_plotly(cm, UMBRALES[pollutant_sel.lower()])
+#            st.plotly_chart(fig_plotly, use_container_width=True)
             return
         with colOtra:  
             # En tu Streamlit:
