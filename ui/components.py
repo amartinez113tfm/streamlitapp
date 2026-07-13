@@ -7,7 +7,7 @@ import altair as alt
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
-
+import plotly.figure_factory as ff
 
 import folium
 from folium.plugins import HeatMapWithTime
@@ -871,3 +871,105 @@ def render_historical_overages_trends_3(df_superaciones, pollutant_sel):
     )
 
     return chart_final, selector_clic
+
+
+
+def dibujar_matriz_plotly(cm, limite):
+            # Definimos las etiquetas
+            x = ['Bajo Limite', 'Supera Limite']
+            y = ['Bajo Limite', 'Supera Limite']
+
+            # Invertimos la matriz para que coincida con el orden visual (Realidad en Y, Prediccion en X)
+            # Plotly a veces dibuja de abajo hacia arriba, asi que le damos formato
+            z = cm
+
+            # Crear el heatmap con anotaciones (figure factory es genial para esto)
+            fig = ff.create_annotated_heatmap(
+                z=z, 
+                x=x, 
+                y=y, 
+                annotation_text=z.astype(str), 
+                colorscale='Blues'
+            )
+
+            # Añadir titulos y ajustar margenes
+            fig.update_layout(
+                title=f'Matriz de Confusion (Limite: {limite} µg/m³)',
+                xaxis_title='Prediccion',
+                yaxis_title='Realidad',
+                width=450,
+                height=450,
+                margin=dict(l=50, r=50, t=80, b=50)
+            )
+
+            return fig
+
+
+#Este bloque va en la pestaña de predicciones
+def graficos_24horas(df_final):
+    # (No ponemos tildes en los comentarios de codigo)
+
+    if df_final is not None and not df_final.empty:
+        st.success("¡Datos cargados con exito!")
+        
+        # --- SECCIÓN 1: MÉTRICAS RESUMEN (MEDIAS DE 24 HORAS) ---
+        st.subheader("📊 Resumen medio de las ultimas 24 horas comunes")
+        
+        # Creamos un sistema de columnas para mostrar los KPI de forma elegante
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            # Media de Ozono y NO2
+            o3_medio = df_final["o3"].mean()
+            st.metric(label="O₃ Medio", value=f"{o3_medio:.1f} µg/m³")
+            no2_medio = df_final["no2"].mean()
+            st.metric(label="NO₂ Medio", value=f"{no2_medio:.1f} µg/m³")
+            
+        with col2:
+            pm10_medio = df_final["pm10"].mean()
+            st.metric(label="Partículas 10mm Medio", value=f"{pm10_medio:.1f} µg/m³")
+            pm2_5_medio = df_final["pm2_5"].mean()
+            st.metric(label="Partículas 10mm Medio", value=f"{pm2_5_medio:.1f} µg/m³")
+            
+        with col3:
+            # Media de Temperatura y Humedad (si existen en tus variables)
+            temp_media = df_final["temperatura"].mean()
+            st.metric(label="Temp. Media", value=f"{temp_media:.1f} °C")
+            humedad_media = df_final["humedad"].mean()
+            st.metric(label="Humedad Media", value=f"{humedad_media:.1f} %")
+            
+        with col4:
+            # Media del tráfico (la columna que renombramos como 'intensidad')
+            trafico_medio = df_final["intensidad"].mean()
+            st.metric(label="Tráfico Medio", value=f"{trafico_medio:.0f} veh/h")
+
+        st.markdown("---")
+
+        # --- SECCIÓN 2: MINIGRÁFICAS (TENDENCIAS METEOROLÓGICAS Y TRÁFICO) ---
+        st.subheader("📈 Evolución temporal del bloque de entrada")
+        
+        # Preparamos un dataframe con el timestamp de indice para que los graficos pinten la hora en el eje X
+        df_lineas = df_final.set_index("timestamp")
+        
+        # Usamos pestañas (tabs) para organizar las graficas sin saturar la pantalla
+        tab1, tab2, tab3 = st.tabs(["🌡️ Meteorología", "🚗 Tráfico", "🧪 Contaminantes"])
+        
+        with tab1:
+            st.write("Evolución de la Temperatura y condiciones climáticas")
+            # Grafico con la temperatura
+            st.line_chart(df_lineas[["temperatura"]])
+            
+            # Si tienes viento o humedad, puedes añadir otro grafico pequeño aqui
+            if "viento_velocidad" in df_lineas.columns:
+                st.line_chart(df_lineas[["viento_velocidad"]])
+                
+        with tab2:
+            st.write("Intensidad de tráfico en el entorno de la estación")
+            st.line_chart(df_lineas[["intensidad"]])
+            
+        with tab3:
+            st.write("Historial de los gases de entrada para la red GRU")
+            # Pintamos O3 y NO2 juntos para ver como interactúan
+            st.line_chart(df_lineas[["o3", "no2"]])
+
+        st.markdown("---")

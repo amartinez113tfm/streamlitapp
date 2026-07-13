@@ -16,6 +16,8 @@ from folium.plugins import HeatMapWithTime
 from streamlit_folium import st_folium
 from streamlit_folium import folium_static
 
+import streamlit.components.v1 as components 
+
 COORDENADAS_ESTACIONES = {
     4: [40.4238, -3.7122], 8: [40.4215, -3.6823], 11: [40.4514, -3.6773],
     16: [40.4400, -3.6397], 17: [40.3471, -3.7133], 18: [40.3947, -3.7318],
@@ -850,17 +852,26 @@ def render_content(pollutant_sel,codigo_sel,fecha_inicio,fecha_fin,seleccionados
         
         colMC, colOtra  = st.columns(2)
         with colMC:
-#            fig_plotly = dibujar_matriz_plotly(cm, UMBRALES[pollutant_sel.lower()])
+            #fig_plotly = dibujar_matriz_plotly(cm, UMBRALES[pollutant_sel.lower()])
 #            st.plotly_chart(fig_plotly, use_container_width=True)
-            return
+            with open("mapa_completo_estaciones.html", "r", encoding="utf-8") as f:
+                html_content = f.read()
+
+                # Insertarlo en la app (puedes ajustar el ancho y el alto)
+                components.html(html_content, height=500, scrolling=True)
+            
         with colOtra:  
             # En tu Streamlit:
             #fig_scatter = dibujar_scatter_rendimiento(df, 'no2', 'NO2')
             #st.plotly_chart(fig_scatter, use_container_width=True) # Mantener False para respetar el tamaño
             st.dataframe(df.head(2))
+               
+    # Leer el archivo HTML
+    with open("mapa_completo_estaciones.html", "r", encoding="utf-8") as f:
+        html_content = f.read()
 
-                    
-
+        # Insertarlo en la app (puedes ajustar el ancho y el alto)
+        components.html(html_content, height=500, scrolling=True)
         
 
 

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_f54840e214d6440323cba003ea64ee8b {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+     <div style="position: fixed; 
+     bottom: 30px; left: 30px; width: 170px; height: 110px; 
+     border: 1px solid #ccc; border-radius: 5px; z-index:9999; font-size:12px;
+     background-color: white; opacity: 0.95; padding: 12px; font-family: Arial, sans-serif;
+     box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+     <b style="color: #2c3e50; display: block; margin-bottom: 8px;">Tipología de Estación</b>
+     <div style="margin-bottom: 5px;"><i class="fa fa-circle" style="color:red"></i> Urbana Tráfico</div>
+     <div style="margin-bottom: 5px;"><i class="fa fa-circle" style="color:blue"></i> Urbana Fondo</div>
+     <div><i class="fa fa-circle" style="color:green"></i> Suburbana</div>
+     </div>
+     
+    
+            <div class="folium-map" id="map_f54840e214d6440323cba003ea64ee8b" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_f54840e214d6440323cba003ea64ee8b = L.map(
+                "map_f54840e214d6440323cba003ea64ee8b",
+                {
+                    center: [40.416775, -3.70379],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 11,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_c68a3c7164a770a40972675821de2562 = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_c68a3c7164a770a40972675821de2562.addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var marker_909f6a635c5501ca28bbe276727d1317 = L.marker(
+                [40.4238823, -3.7122567],
+                {
+}
+            ).addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var icon_d71bf0432f6fb16b61554210b4649de2 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "cloud",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_f605b7690c50c894d8aa5b88a0f7de56 = L.popup({
+  "maxWidth": 270,
+});
+
+        
+            
+                var html_58eac400d8f05022abe972bfc1d8ce32 = $(`<div id="html_58eac400d8f05022abe972bfc1d8ce32" style="width: 100.0%; height: 100.0%;">     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; width: 240px; font-size: 12px; color: #333;">         <h4 style="margin: 0 0 8px 0; color: #2c3e50; border-bottom: 2px solid red; padding-bottom: 3px; font-size: 14px;">             Plaza de España         </h4>         <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">             <tr><td style="padding: 2px 0;"><b>Código:</b></td><td style="text-align: right;">4</td></tr>             <tr><td style="padding: 2px 0;"><b>Tipo:</b></td><td style="text-align: right; color: red; font-weight: bold;">Urbana Tráfico</td></tr>         </table>                  <div style="background-color: #fcf8e3; border: 1px solid #fbeed5; padding: 6px; border-radius: 4px; margin-bottom: 6px;">             <b style="color: #c09853; display: block; margin-bottom: 2px;">💨 Calidad del Aire:</b>             <span style="font-size: 11px; color: #555;">NO2</span>         </div>                  <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 6px; border-radius: 4px;">             <b style="color: #3a87ad; display: block; margin-bottom: 2px;">🌡️ Meteorología:</b>             <span style="font-size: 11px; color: #555;">T (83)</span>         </div>     </div>     </div>`)[0];
+                popup_f605b7690c50c894d8aa5b88a0f7de56.setContent(html_58eac400d8f05022abe972bfc1d8ce32);
+            
+        
+
+        marker_909f6a635c5501ca28bbe276727d1317.bindPopup(popup_f605b7690c50c894d8aa5b88a0f7de56)
+        ;
+
+        
+    
+    
+            marker_909f6a635c5501ca28bbe276727d1317.bindTooltip(
+                `<div>
+                     Plaza de España (Urbana Tráfico)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_909f6a635c5501ca28bbe276727d1317.setIcon(icon_d71bf0432f6fb16b61554210b4649de2);
+            
+    
+            var marker_7b158610a08c2b20982804d1e49bc5af = L.marker(
+                [40.4215533, -3.6823158],
+                {
+}
+            ).addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var icon_7d65f6c16d0b54ac72771b97163a2099 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "cloud",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_934f244dc53d9b06cc8302192dc32851 = L.popup({
+  "maxWidth": 270,
+});
+
+        
+            
+                var html_8d4005362dee3ea4da52f5f27901f81c = $(`<div id="html_8d4005362dee3ea4da52f5f27901f81c" style="width: 100.0%; height: 100.0%;">     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; width: 240px; font-size: 12px; color: #333;">         <h4 style="margin: 0 0 8px 0; color: #2c3e50; border-bottom: 2px solid red; padding-bottom: 3px; font-size: 14px;">             Escuelas Aguirre         </h4>         <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">             <tr><td style="padding: 2px 0;"><b>Código:</b></td><td style="text-align: right;">8</td></tr>             <tr><td style="padding: 2px 0;"><b>Tipo:</b></td><td style="text-align: right; color: red; font-weight: bold;">Urbana Tráfico</td></tr>         </table>                  <div style="background-color: #fcf8e3; border: 1px solid #fbeed5; padding: 6px; border-radius: 4px; margin-bottom: 6px;">             <b style="color: #c09853; display: block; margin-bottom: 2px;">💨 Calidad del Aire:</b>             <span style="font-size: 11px; color: #555;">NO2, PM10, PM2_5, O3</span>         </div>                  <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 6px; border-radius: 4px;">             <b style="color: #3a87ad; display: block; margin-bottom: 2px;">🌡️ Meteorología:</b>             <span style="font-size: 11px; color: #555;">T (83), HR (86)</span>         </div>     </div>     </div>`)[0];
+                popup_934f244dc53d9b06cc8302192dc32851.setContent(html_8d4005362dee3ea4da52f5f27901f81c);
+            
+        
+
+        marker_7b158610a08c2b20982804d1e49bc5af.bindPopup(popup_934f244dc53d9b06cc8302192dc32851)
+        ;
+
+        
+    
+    
+            marker_7b158610a08c2b20982804d1e49bc5af.bindTooltip(
+                `<div>
+                     Escuelas Aguirre (Urbana Tráfico)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_7b158610a08c2b20982804d1e49bc5af.setIcon(icon_7d65f6c16d0b54ac72771b97163a2099);
+            
+    
+            var marker_766a4927bfba64d51fe6478e60887fbc = L.marker(
+                [40.4400457, -3.6392422],
+                {
+}
+            ).addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var icon_29900c75899594e6fe1ca9d420f50cfd = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cloud",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_7d0cb7e5049b647907a6853fa29545d0 = L.popup({
+  "maxWidth": 270,
+});
+
+        
+            
+                var html_d350d8a42dd02897207f69679a620445 = $(`<div id="html_d350d8a42dd02897207f69679a620445" style="width: 100.0%; height: 100.0%;">     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; width: 240px; font-size: 12px; color: #333;">         <h4 style="margin: 0 0 8px 0; color: #2c3e50; border-bottom: 2px solid blue; padding-bottom: 3px; font-size: 14px;">             Arturo Soria         </h4>         <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">             <tr><td style="padding: 2px 0;"><b>Código:</b></td><td style="text-align: right;">16</td></tr>             <tr><td style="padding: 2px 0;"><b>Tipo:</b></td><td style="text-align: right; color: blue; font-weight: bold;">Urbana Fondo</td></tr>         </table>                  <div style="background-color: #fcf8e3; border: 1px solid #fbeed5; padding: 6px; border-radius: 4px; margin-bottom: 6px;">             <b style="color: #c09853; display: block; margin-bottom: 2px;">💨 Calidad del Aire:</b>             <span style="font-size: 11px; color: #555;">NO2, O3</span>         </div>                  <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 6px; border-radius: 4px;">             <b style="color: #3a87ad; display: block; margin-bottom: 2px;">🌡️ Meteorología:</b>             <span style="font-size: 11px; color: #555;">T (83), HR (86)</span>         </div>     </div>     </div>`)[0];
+                popup_7d0cb7e5049b647907a6853fa29545d0.setContent(html_d350d8a42dd02897207f69679a620445);
+            
+        
+
+        marker_766a4927bfba64d51fe6478e60887fbc.bindPopup(popup_7d0cb7e5049b647907a6853fa29545d0)
+        ;
+
+        
+    
+    
+            marker_766a4927bfba64d51fe6478e60887fbc.bindTooltip(
+                `<div>
+                     Arturo Soria (Urbana Fondo)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_766a4927bfba64d51fe6478e60887fbc.setIcon(icon_29900c75899594e6fe1ca9d420f50cfd);
+            
+    
+            var marker_07e1e2cc2685b91b204d3fb0b894f9b5 = L.marker(
+                [40.3947825, -3.7318356],
+                {
+}
+            ).addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var icon_622604a98fa6bfc1fa306ef726a38c65 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cloud",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_fdb1b6ca6c46d5f773897a36a3c71656 = L.popup({
+  "maxWidth": 270,
+});
+
+        
+            
+                var html_0fd1c2352f0dda2d2742a7e068c14ab2 = $(`<div id="html_0fd1c2352f0dda2d2742a7e068c14ab2" style="width: 100.0%; height: 100.0%;">     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; width: 240px; font-size: 12px; color: #333;">         <h4 style="margin: 0 0 8px 0; color: #2c3e50; border-bottom: 2px solid blue; padding-bottom: 3px; font-size: 14px;">             Farolillo         </h4>         <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">             <tr><td style="padding: 2px 0;"><b>Código:</b></td><td style="text-align: right;">18</td></tr>             <tr><td style="padding: 2px 0;"><b>Tipo:</b></td><td style="text-align: right; color: blue; font-weight: bold;">Urbana Fondo</td></tr>         </table>                  <div style="background-color: #fcf8e3; border: 1px solid #fbeed5; padding: 6px; border-radius: 4px; margin-bottom: 6px;">             <b style="color: #c09853; display: block; margin-bottom: 2px;">💨 Calidad del Aire:</b>             <span style="font-size: 11px; color: #555;">NO2, PM10, O3</span>         </div>                  <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 6px; border-radius: 4px;">             <b style="color: #3a87ad; display: block; margin-bottom: 2px;">🌡️ Meteorología:</b>             <span style="font-size: 11px; color: #555;">T (83)</span>         </div>     </div>     </div>`)[0];
+                popup_fdb1b6ca6c46d5f773897a36a3c71656.setContent(html_0fd1c2352f0dda2d2742a7e068c14ab2);
+            
+        
+
+        marker_07e1e2cc2685b91b204d3fb0b894f9b5.bindPopup(popup_fdb1b6ca6c46d5f773897a36a3c71656)
+        ;
+
+        
+    
+    
+            marker_07e1e2cc2685b91b204d3fb0b894f9b5.bindTooltip(
+                `<div>
+                     Farolillo (Urbana Fondo)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_07e1e2cc2685b91b204d3fb0b894f9b5.setIcon(icon_622604a98fa6bfc1fa306ef726a38c65);
+            
+    
+            var marker_3e7bd1a097d93e0908b27cd80fb41c9b = L.marker(
+                [40.4193577, -3.7473445],
+                {
+}
+            ).addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var icon_60b51918f9cc835a0176c2ce7b6d5d75 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "leaf",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_0230b09152f69aa265c196e2b63fbb85 = L.popup({
+  "maxWidth": 270,
+});
+
+        
+            
+                var html_ad5cf35daa390d4a0adcbbdad0653797 = $(`<div id="html_ad5cf35daa390d4a0adcbbdad0653797" style="width: 100.0%; height: 100.0%;">     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; width: 240px; font-size: 12px; color: #333;">         <h4 style="margin: 0 0 8px 0; color: #2c3e50; border-bottom: 2px solid green; padding-bottom: 3px; font-size: 14px;">             Casa de Campo         </h4>         <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">             <tr><td style="padding: 2px 0;"><b>Código:</b></td><td style="text-align: right;">24</td></tr>             <tr><td style="padding: 2px 0;"><b>Tipo:</b></td><td style="text-align: right; color: green; font-weight: bold;">Suburbana</td></tr>         </table>                  <div style="background-color: #fcf8e3; border: 1px solid #fbeed5; padding: 6px; border-radius: 4px; margin-bottom: 6px;">             <b style="color: #c09853; display: block; margin-bottom: 2px;">💨 Calidad del Aire:</b>             <span style="font-size: 11px; color: #555;">NO2, PM10, PM2_5O3</span>         </div>                  <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 6px; border-radius: 4px;">             <b style="color: #3a87ad; display: block; margin-bottom: 2px;">🌡️ Meteorología:</b>             <span style="font-size: 11px; color: #555;">VV (81), DV (82), T (83), HR (86), PB (87), RS (88), P (89)</span>         </div>     </div>     </div>`)[0];
+                popup_0230b09152f69aa265c196e2b63fbb85.setContent(html_ad5cf35daa390d4a0adcbbdad0653797);
+            
+        
+
+        marker_3e7bd1a097d93e0908b27cd80fb41c9b.bindPopup(popup_0230b09152f69aa265c196e2b63fbb85)
+        ;
+
+        
+    
+    
+            marker_3e7bd1a097d93e0908b27cd80fb41c9b.bindTooltip(
+                `<div>
+                     Casa de Campo (Suburbana)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_3e7bd1a097d93e0908b27cd80fb41c9b.setIcon(icon_60b51918f9cc835a0176c2ce7b6d5d75);
+            
+    
+            var marker_04ccc4fa94770a354d1a39aa06349408 = L.marker(
+                [40.4192091, -3.7031662],
+                {
+}
+            ).addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var icon_9406de86572d50df232408ba906a3fce = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cloud",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_6e85f10e70bda0c192a20adede4d0b74 = L.popup({
+  "maxWidth": 270,
+});
+
+        
+            
+                var html_63642ed9ab4d7af55aca5277bf3a6d1a = $(`<div id="html_63642ed9ab4d7af55aca5277bf3a6d1a" style="width: 100.0%; height: 100.0%;">     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; width: 240px; font-size: 12px; color: #333;">         <h4 style="margin: 0 0 8px 0; color: #2c3e50; border-bottom: 2px solid blue; padding-bottom: 3px; font-size: 14px;">             Plaza del Carmen         </h4>         <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">             <tr><td style="padding: 2px 0;"><b>Código:</b></td><td style="text-align: right;">35</td></tr>             <tr><td style="padding: 2px 0;"><b>Tipo:</b></td><td style="text-align: right; color: blue; font-weight: bold;">Urbana Fondo</td></tr>         </table>                  <div style="background-color: #fcf8e3; border: 1px solid #fbeed5; padding: 6px; border-radius: 4px; margin-bottom: 6px;">             <b style="color: #c09853; display: block; margin-bottom: 2px;">💨 Calidad del Aire:</b>             <span style="font-size: 11px; color: #555;">NO2, O3</span>         </div>                  <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 6px; border-radius: 4px;">             <b style="color: #3a87ad; display: block; margin-bottom: 2px;">🌡️ Meteorología:</b>             <span style="font-size: 11px; color: #555;">T (83),HR(86)</span>         </div>     </div>     </div>`)[0];
+                popup_6e85f10e70bda0c192a20adede4d0b74.setContent(html_63642ed9ab4d7af55aca5277bf3a6d1a);
+            
+        
+
+        marker_04ccc4fa94770a354d1a39aa06349408.bindPopup(popup_6e85f10e70bda0c192a20adede4d0b74)
+        ;
+
+        
+    
+    
+            marker_04ccc4fa94770a354d1a39aa06349408.bindTooltip(
+                `<div>
+                     Plaza del Carmen (Urbana Fondo)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_04ccc4fa94770a354d1a39aa06349408.setIcon(icon_9406de86572d50df232408ba906a3fce);
+            
+    
+            var marker_31c2a1b980f9c1e53fc39d6fad339835 = L.marker(
+                [40.4079517, -3.6453104],
+                {
+}
+            ).addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var icon_000b41ad550b3f95f7a3ea7488564d2b = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cloud",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_626b658986b87715f1d431a1e34027fa = L.popup({
+  "maxWidth": 270,
+});
+
+        
+            
+                var html_20b4b9c804908a8e215cee2b7309ba8c = $(`<div id="html_20b4b9c804908a8e215cee2b7309ba8c" style="width: 100.0%; height: 100.0%;">     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; width: 240px; font-size: 12px; color: #333;">         <h4 style="margin: 0 0 8px 0; color: #2c3e50; border-bottom: 2px solid blue; padding-bottom: 3px; font-size: 14px;">             Moratalaz         </h4>         <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">             <tr><td style="padding: 2px 0;"><b>Código:</b></td><td style="text-align: right;">36</td></tr>             <tr><td style="padding: 2px 0;"><b>Tipo:</b></td><td style="text-align: right; color: blue; font-weight: bold;">Urbana Fondo</td></tr>         </table>                  <div style="background-color: #fcf8e3; border: 1px solid #fbeed5; padding: 6px; border-radius: 4px; margin-bottom: 6px;">             <b style="color: #c09853; display: block; margin-bottom: 2px;">💨 Calidad del Aire:</b>             <span style="font-size: 11px; color: #555;">NO2, SO2, PM10</span>         </div>                  <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 6px; border-radius: 4px;">             <b style="color: #3a87ad; display: block; margin-bottom: 2px;">🌡️ Meteorología:</b>             <span style="font-size: 11px; color: #555;">T (83), HR (86)</span>         </div>     </div>     </div>`)[0];
+                popup_626b658986b87715f1d431a1e34027fa.setContent(html_20b4b9c804908a8e215cee2b7309ba8c);
+            
+        
+
+        marker_31c2a1b980f9c1e53fc39d6fad339835.bindPopup(popup_626b658986b87715f1d431a1e34027fa)
+        ;
+
+        
+    
+    
+            marker_31c2a1b980f9c1e53fc39d6fad339835.bindTooltip(
+                `<div>
+                     Moratalaz (Urbana Fondo)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_31c2a1b980f9c1e53fc39d6fad339835.setIcon(icon_000b41ad550b3f95f7a3ea7488564d2b);
+            
+    
+            var marker_4fd23ec8e53455596776b3ec60f15934 = L.marker(
+                [40.4455439, -3.7071303],
+                {
+}
+            ).addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var icon_e8a4c17cad771c653fcaf3f2f37fc245 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "cloud",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_15fcc46a251c38fa03742cdce2783cb9 = L.popup({
+  "maxWidth": 270,
+});
+
+        
+            
+                var html_52115380458545b68a74408a148f7e45 = $(`<div id="html_52115380458545b68a74408a148f7e45" style="width: 100.0%; height: 100.0%;">     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; width: 240px; font-size: 12px; color: #333;">         <h4 style="margin: 0 0 8px 0; color: #2c3e50; border-bottom: 2px solid red; padding-bottom: 3px; font-size: 14px;">             Cuatro Caminos         </h4>         <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">             <tr><td style="padding: 2px 0;"><b>Código:</b></td><td style="text-align: right;">38</td></tr>             <tr><td style="padding: 2px 0;"><b>Tipo:</b></td><td style="text-align: right; color: red; font-weight: bold;">Urbana Tráfico</td></tr>         </table>                  <div style="background-color: #fcf8e3; border: 1px solid #fbeed5; padding: 6px; border-radius: 4px; margin-bottom: 6px;">             <b style="color: #c09853; display: block; margin-bottom: 2px;">💨 Calidad del Aire:</b>             <span style="font-size: 11px; color: #555;">NO2, PM10, PM2_5, BTX</span>         </div>                  <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 6px; border-radius: 4px;">             <b style="color: #3a87ad; display: block; margin-bottom: 2px;">🌡️ Meteorología:</b>             <span style="font-size: 11px; color: #555;">T (83), HR (86)</span>         </div>     </div>     </div>`)[0];
+                popup_15fcc46a251c38fa03742cdce2783cb9.setContent(html_52115380458545b68a74408a148f7e45);
+            
+        
+
+        marker_4fd23ec8e53455596776b3ec60f15934.bindPopup(popup_15fcc46a251c38fa03742cdce2783cb9)
+        ;
+
+        
+    
+    
+            marker_4fd23ec8e53455596776b3ec60f15934.bindTooltip(
+                `<div>
+                     Cuatro Caminos (Urbana Tráfico)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_4fd23ec8e53455596776b3ec60f15934.setIcon(icon_e8a4c17cad771c653fcaf3f2f37fc245);
+            
+    
+            var marker_f445f7fc5f9dee2686292b3b8c0008eb = L.marker(
+                [40.4782322, -3.7115364],
+                {
+}
+            ).addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var icon_9e3ab0912ad9aaea0591737007467eb1 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cloud",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_84fcac901814159e772373d8cb535fcc = L.popup({
+  "maxWidth": 270,
+});
+
+        
+            
+                var html_f49369766d11ed69c0953aee87bcea60 = $(`<div id="html_f49369766d11ed69c0953aee87bcea60" style="width: 100.0%; height: 100.0%;">     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; width: 240px; font-size: 12px; color: #333;">         <h4 style="margin: 0 0 8px 0; color: #2c3e50; border-bottom: 2px solid blue; padding-bottom: 3px; font-size: 14px;">             Barrio del Pilar         </h4>         <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">             <tr><td style="padding: 2px 0;"><b>Código:</b></td><td style="text-align: right;">39</td></tr>             <tr><td style="padding: 2px 0;"><b>Tipo:</b></td><td style="text-align: right; color: blue; font-weight: bold;">Urbana Fondo</td></tr>         </table>                  <div style="background-color: #fcf8e3; border: 1px solid #fbeed5; padding: 6px; border-radius: 4px; margin-bottom: 6px;">             <b style="color: #c09853; display: block; margin-bottom: 2px;">💨 Calidad del Aire:</b>             <span style="font-size: 11px; color: #555;">NO2, O3</span>         </div>                  <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 6px; border-radius: 4px;">             <b style="color: #3a87ad; display: block; margin-bottom: 2px;">🌡️ Meteorología:</b>             <span style="font-size: 11px; color: #555;">T (83), HR (86), P (89)</span>         </div>     </div>     </div>`)[0];
+                popup_84fcac901814159e772373d8cb535fcc.setContent(html_f49369766d11ed69c0953aee87bcea60);
+            
+        
+
+        marker_f445f7fc5f9dee2686292b3b8c0008eb.bindPopup(popup_84fcac901814159e772373d8cb535fcc)
+        ;
+
+        
+    
+    
+            marker_f445f7fc5f9dee2686292b3b8c0008eb.bindTooltip(
+                `<div>
+                     Barrio del Pilar (Urbana Fondo)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_f445f7fc5f9dee2686292b3b8c0008eb.setIcon(icon_9e3ab0912ad9aaea0591737007467eb1);
+            
+    
+            var marker_e89f97c7fe890bc3ec5bc616ebb54db2 = L.marker(
+                [40.3730118, -3.6121394],
+                {
+}
+            ).addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var icon_1de210a6e1a8f14185ccceba02854236 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cloud",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d0eabc421d44404b2ed6b4c57dfceb30 = L.popup({
+  "maxWidth": 270,
+});
+
+        
+            
+                var html_7b264eb2d4d7faa7fadcf63badc7a874 = $(`<div id="html_7b264eb2d4d7faa7fadcf63badc7a874" style="width: 100.0%; height: 100.0%;">     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; width: 240px; font-size: 12px; color: #333;">         <h4 style="margin: 0 0 8px 0; color: #2c3e50; border-bottom: 2px solid blue; padding-bottom: 3px; font-size: 14px;">             Ensanche de Vallecas         </h4>         <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">             <tr><td style="padding: 2px 0;"><b>Código:</b></td><td style="text-align: right;">54</td></tr>             <tr><td style="padding: 2px 0;"><b>Tipo:</b></td><td style="text-align: right; color: blue; font-weight: bold;">Urbana Fondo</td></tr>         </table>                  <div style="background-color: #fcf8e3; border: 1px solid #fbeed5; padding: 6px; border-radius: 4px; margin-bottom: 6px;">             <b style="color: #c09853; display: block; margin-bottom: 2px;">💨 Calidad del Aire:</b>             <span style="font-size: 11px; color: #555;">NO2, O3</span>         </div>                  <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 6px; border-radius: 4px;">             <b style="color: #3a87ad; display: block; margin-bottom: 2px;">🌡️ Meteorología:</b>             <span style="font-size: 11px; color: #555;">VV (81), DV (82), T (83), HR (86), RS (88), P (89)</span>         </div>     </div>     </div>`)[0];
+                popup_d0eabc421d44404b2ed6b4c57dfceb30.setContent(html_7b264eb2d4d7faa7fadcf63badc7a874);
+            
+        
+
+        marker_e89f97c7fe890bc3ec5bc616ebb54db2.bindPopup(popup_d0eabc421d44404b2ed6b4c57dfceb30)
+        ;
+
+        
+    
+    
+            marker_e89f97c7fe890bc3ec5bc616ebb54db2.bindTooltip(
+                `<div>
+                     Ensanche de Vallecas (Urbana Fondo)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_e89f97c7fe890bc3ec5bc616ebb54db2.setIcon(icon_1de210a6e1a8f14185ccceba02854236);
+            
+    
+            var marker_ec95928a07da8e3853ac98c7315102d6 = L.marker(
+                [40.3850336, -3.7187679],
+                {
+}
+            ).addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var icon_e47940a855874304dd9fbd2b0ae6ee4b = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "cloud",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_163b81682b1379eeca434b2449fa6545 = L.popup({
+  "maxWidth": 270,
+});
+
+        
+            
+                var html_532fe8fe0746ebd85461cff3640ce06c = $(`<div id="html_532fe8fe0746ebd85461cff3640ce06c" style="width: 100.0%; height: 100.0%;">     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; width: 240px; font-size: 12px; color: #333;">         <h4 style="margin: 0 0 8px 0; color: #2c3e50; border-bottom: 2px solid red; padding-bottom: 3px; font-size: 14px;">             Plaza Elíptica         </h4>         <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">             <tr><td style="padding: 2px 0;"><b>Código:</b></td><td style="text-align: right;">56</td></tr>             <tr><td style="padding: 2px 0;"><b>Tipo:</b></td><td style="text-align: right; color: red; font-weight: bold;">Urbana Tráfico</td></tr>         </table>                  <div style="background-color: #fcf8e3; border: 1px solid #fbeed5; padding: 6px; border-radius: 4px; margin-bottom: 6px;">             <b style="color: #c09853; display: block; margin-bottom: 2px;">💨 Calidad del Aire:</b>             <span style="font-size: 11px; color: #555;">NO2, CO, PM10, PM2_5</span>         </div>                  <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 6px; border-radius: 4px;">             <b style="color: #3a87ad; display: block; margin-bottom: 2px;">🌡️ Meteorología:</b>             <span style="font-size: 11px; color: #555;">VV (81), DV (82), T (83), HR (86), PB (87), P (89)</span>         </div>     </div>     </div>`)[0];
+                popup_163b81682b1379eeca434b2449fa6545.setContent(html_532fe8fe0746ebd85461cff3640ce06c);
+            
+        
+
+        marker_ec95928a07da8e3853ac98c7315102d6.bindPopup(popup_163b81682b1379eeca434b2449fa6545)
+        ;
+
+        
+    
+    
+            marker_ec95928a07da8e3853ac98c7315102d6.bindTooltip(
+                `<div>
+                     Plaza Elíptica (Urbana Tráfico)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_ec95928a07da8e3853ac98c7315102d6.setIcon(icon_e47940a855874304dd9fbd2b0ae6ee4b);
+            
+    
+            var marker_aadcd2af6057ad979f0d78d57c01ce5c = L.marker(
+                [40.5180701, -3.7746101],
+                {
+}
+            ).addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var icon_9e02f41c52e652f20a3ab0872294a9a4 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "leaf",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_3f0d62315a2fbb61a7927bea994d9a83 = L.popup({
+  "maxWidth": 270,
+});
+
+        
+            
+                var html_64b57c6d225825a2d39e16409bf7b4ce = $(`<div id="html_64b57c6d225825a2d39e16409bf7b4ce" style="width: 100.0%; height: 100.0%;">     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; width: 240px; font-size: 12px; color: #333;">         <h4 style="margin: 0 0 8px 0; color: #2c3e50; border-bottom: 2px solid green; padding-bottom: 3px; font-size: 14px;">             El Pardo         </h4>         <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">             <tr><td style="padding: 2px 0;"><b>Código:</b></td><td style="text-align: right;">58</td></tr>             <tr><td style="padding: 2px 0;"><b>Tipo:</b></td><td style="text-align: right; color: green; font-weight: bold;">Suburbana</td></tr>         </table>                  <div style="background-color: #fcf8e3; border: 1px solid #fbeed5; padding: 6px; border-radius: 4px; margin-bottom: 6px;">             <b style="color: #c09853; display: block; margin-bottom: 2px;">💨 Calidad del Aire:</b>             <span style="font-size: 11px; color: #555;">NO2, O3</span>         </div>                  <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 6px; border-radius: 4px;">             <b style="color: #3a87ad; display: block; margin-bottom: 2px;">🌡️ Meteorología:</b>             <span style="font-size: 11px; color: #555;">T (83), HR (86)</span>         </div>     </div>     </div>`)[0];
+                popup_3f0d62315a2fbb61a7927bea994d9a83.setContent(html_64b57c6d225825a2d39e16409bf7b4ce);
+            
+        
+
+        marker_aadcd2af6057ad979f0d78d57c01ce5c.bindPopup(popup_3f0d62315a2fbb61a7927bea994d9a83)
+        ;
+
+        
+    
+    
+            marker_aadcd2af6057ad979f0d78d57c01ce5c.bindTooltip(
+                `<div>
+                     El Pardo (Suburbana)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_aadcd2af6057ad979f0d78d57c01ce5c.setIcon(icon_9e02f41c52e652f20a3ab0872294a9a4);
+            
+    
+            var marker_ccfc7b5c15bcd371949a36fc7e6213ea = L.marker(
+                [40.465144, -3.609031],
+                {
+}
+            ).addTo(map_f54840e214d6440323cba003ea64ee8b);
+        
+    
+            var icon_97b70c6c9964e57401d36145f032e711 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "leaf",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_ad0aab8c58a7f991286519e8b9da39f3 = L.popup({
+  "maxWidth": 270,
+});
+
+        
+            
+                var html_161729e7d902dbaf43ef233df19b5418 = $(`<div id="html_161729e7d902dbaf43ef233df19b5418" style="width: 100.0%; height: 100.0%;">     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; width: 240px; font-size: 12px; color: #333;">         <h4 style="margin: 0 0 8px 0; color: #2c3e50; border-bottom: 2px solid green; padding-bottom: 3px; font-size: 14px;">             Juan Carlos I         </h4>         <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">             <tr><td style="padding: 2px 0;"><b>Código:</b></td><td style="text-align: right;">59</td></tr>             <tr><td style="padding: 2px 0;"><b>Tipo:</b></td><td style="text-align: right; color: green; font-weight: bold;">Suburbana</td></tr>         </table>                  <div style="background-color: #fcf8e3; border: 1px solid #fbeed5; padding: 6px; border-radius: 4px; margin-bottom: 6px;">             <b style="color: #c09853; display: block; margin-bottom: 2px;">💨 Calidad del Aire:</b>             <span style="font-size: 11px; color: #555;">NO2, O3</span>         </div>                  <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 6px; border-radius: 4px;">             <b style="color: #3a87ad; display: block; margin-bottom: 2px;">🌡️ Meteorología:</b>             <span style="font-size: 11px; color: #555;">VV (81), DV (82), T (83), HR (86), PB (87), RS (88), P (89)</span>         </div>     </div>     </div>`)[0];
+                popup_ad0aab8c58a7f991286519e8b9da39f3.setContent(html_161729e7d902dbaf43ef233df19b5418);
+            
+        
+
+        marker_ccfc7b5c15bcd371949a36fc7e6213ea.bindPopup(popup_ad0aab8c58a7f991286519e8b9da39f3)
+        ;
+
+        
+    
+    
+            marker_ccfc7b5c15bcd371949a36fc7e6213ea.bindTooltip(
+                `<div>
+                     Juan Carlos I (Suburbana)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_ccfc7b5c15bcd371949a36fc7e6213ea.setIcon(icon_97b70c6c9964e57401d36145f032e711);
+            
+</script>
+</html>

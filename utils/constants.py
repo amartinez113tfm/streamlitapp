@@ -15,3 +15,22 @@ DICC_ESTACIONES = {
     58: {"nombre": "El Pardo", "lat": 40.521822, "lon": -3.774536},
     59: {"nombre": "Juan Carlos I", "lat": 40.465250, "lon": -3.610514}
 }
+
+
+
+# 1. Definimos umbrales legales (Ejemplo NO2 según normativa europea/Madrid)
+UMBRALES = {"no2": 40, "pm10": 50, "pm2_5": 25, "so2": 125, "o3":120}
+
+
+# 1. Diccionario de estaciones
+mapa_estaciones_O3 = {
+    "Escuelas Aguirre": "8",
+    "Arturo Soria": "16",
+    "Farolillo": "18",
+    "Casa de Campo": "24",
+    "Plaza del Carmen": "35",
+    "Barrio del Pilar": "39",
+    "Ensanche de Vallecas": "54",
+    "El Pardo": "58",
+    "Juan Carlos I": "59"
+}
