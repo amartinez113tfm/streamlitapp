@@ -7,7 +7,7 @@ import altair as alt
 from sqlalchemy import text
 import folium
 from streamlit_folium import st_folium
-from ui import tab_historico, tab_prediccion, tab_historico_todas
+from ui import tab_historico_new, tab_prediccion, tab_historico_todas, tab_historico_todas_new
 from datetime import datetime, timedelta
 import core.model_configs as mc
 
@@ -96,15 +96,17 @@ def main():
         )
 
     # 3. Creación de las Pestañas (Tabs)
-    tab1, tab2, tab3 = st.tabs(["🕒 Datos Históricos","Histórico Global", "🔮 Predicción 24h"])
-
-    # 4. Renderizado del contenido de cada pestaña usando los módulos de 'ui'
-    with tab1:
-        tab_historico.render_content(pollutant_sel,codigo_sel,fecha_inicio,fecha_fin,seleccionados,opciones_meteo)
-    with tab2:
-        tab_historico_todas.render_content(pollutant_sel,codigo_sel,fecha_inicio,fecha_fin,seleccionados)
+    #tab1, tab2, tab3, tab4, tab5 = st.tabs(["🕒 Datos Históricos","Histórico Global", "🔮 Predicción 24h","Nuevo Histotico","Nuevo histórico Global"])
+    tab3, tab4, tab5 = st.tabs(["Predicción 24h","Histotico","Histórico Global"])
+    
+    
+    
+    with tab4:
+        tab_historico_new.render_content()
+    with tab5:
+        tab_historico_todas_new.render_content()
     with tab3:
-        tab_prediccion.render_content(pollutant_sel,codigo_sel,fecha_inicio,fecha_fin,seleccionados)
+            tab_prediccion.render_content(pollutant_sel,codigo_sel,fecha_inicio,fecha_fin,seleccionados)
 
 if __name__ == "__main__":
     main()

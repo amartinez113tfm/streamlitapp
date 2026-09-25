@@ -291,6 +291,7 @@ def get_mongodb_client(): pass
 
 
 #funcion que lee del parquet total con todos los datos y predicciones
+@st.cache_data(show_spinner="Cargando datos desde el origen...", ttl=3600)
 def get_datos_parquetTotal(codigo_sel, pollutant_sel, fecha_inicio, fecha_fin):
     df = pd.read_parquet('parquet_total/dataset_total_predNO2.parquet')
     df['timestamp'] = pd.to_datetime(df['timestamp'])
@@ -327,7 +328,7 @@ def get_datos_parquetTotal(codigo_sel, pollutant_sel, fecha_inicio, fecha_fin):
 
 # Obtiene la carpeta donde está este script
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
+@st.cache_data(show_spinner="Cargando datos desde el origen...", ttl=3600)
 def get_todo():
     # Une la carpeta base con tu archivo
     #path = os.path.join(BASE_DIR, 'parquet_total', 'dataset_total_predNO2.parquet')

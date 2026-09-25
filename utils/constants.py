@@ -34,3 +34,19 @@ mapa_estaciones_O3 = {
     "El Pardo": "58",
     "Juan Carlos I": "59"
 }
+
+mapa_estaciones_NO2 = {
+  "Plaza de España": "4",
+  "Escuelas Aguirre": "8",
+  "Arturo Soria": "16",
+  "Farolillo": "18",
+  "Casa de Campo": "24",
+  "Plaza del Carmen": "35",
+  "Moratalaz": "36",
+  "Cuatro Caminos": "38",
+  "Barrio del Pilar": "39",
+  "Ensanche de Vallecas": "54",
+  "Plaza Elíptica": "56",
+  "El Pardo": "58",
+  "Juan Carlos I": "59"
+}

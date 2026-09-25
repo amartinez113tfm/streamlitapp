@@ -9,6 +9,7 @@ from ui import components as co
 from utils import constants as cte
 import pandas as pd
 import utils.constants as cte
+import streamlit.components.v1 as components
 
 def render_content(pollutant_sel,codigo_sel,fecha_inicio,fecha_fin,seleccionados):
     st.header("Predicciones para las Próximas 24 Horas")
@@ -17,14 +18,25 @@ def render_content(pollutant_sel,codigo_sel,fecha_inicio,fecha_fin,seleccionados
     # El codigo dentro de este 'if' solo se ejecuta al pulsar el boton
     # Componente visual para que el usuario elija la estacion por su nombre
     estacion_seleccionada = st.selectbox(
-        "Selecciona la estación de monitorización:",
+        "Selecciona la estación de monitorización O3 y NO2:",
         options=list(cte.mapa_estaciones_O3.keys()),
         index=0  # Por defecto aparecera seleccionada Escuelas Aguirre (ID: 8)
     )
 
+    #estacion_seleccionada_NO2 = st.selectbox("Selecciona la estación de monitorización NO2",
+    #                                         options=(cte.mapa_estaciones_NO2.keys()))
+
     # Obtenemos el ID en formato string correspondiente para pasarselo a tus funciones
     id_estacion_str = cte.mapa_estaciones_O3[estacion_seleccionada]
-    if st.button("Calcular Previsión de Ozono para las próximas 24 horas", type="primary"):
+
+    # debug de lo que viene de mongoDB
+    '''
+    if st.button("Degug MongoDB"):
+        df_bloque = o3.bloque48Debug(id_estacion_str)
+        st.dataframe(df_bloque)
+    '''
+
+    if st.button("Calcular Previsión de Ozono y Dióxido de Nitrógeno para las próximas 24 horas", type="primary"):
             
             with st.spinner("Conectando a las colecciones de MongoDB y unificando historicos..."):
                 # Llamamos a tu funcion
@@ -36,17 +48,29 @@ def render_content(pollutant_sel,codigo_sel,fecha_inicio,fecha_fin,seleccionados
                 st.success(f"¡Datos de las últimas 48 horas cargados con éxito! (Ventana temporal: {df_bloque_pasado['timestamp'].min()} a {df_bloque_pasado['timestamp'].max()})")
                 
                 # Mostramos una vista previa de la tabla unificada para que el tribunal del TFM vea que es real
-                with st.expander("Ver matriz de entrada unificada (Últimas 24h medidass)"):
-                    st.dataframe(df_bloque_pasado)
-
-                co.graficos_24horas(df_bloque_pasado)
+                with st.expander("Ver últimas 24h medidas"):
+                    #st.dataframe(df_bloque_pasado)
+                    co.graficos_24horas(df_bloque_pasado)
                 #o3.prediccionO3HF(df_bloque_pasado,'8')
                 o3.prediccionReal48h_3(df_bloque_pasado,id_estacion_str)
+                no2.prediccionReal48h_3(df_bloque_pasado,id_estacion_str)
 
+
+   
                 
     if st.button("Prueba Previsión para las próximas 24 horas", type="primary"):
         o3.prueba24Horas(id_estacion_str)
-    
+
+    with st.expander("Prediccion de Calidad del Aire (Portal de calidad de aire de Madrid)"):        
+        # URL directa de la pagina o iframe del visor de calidad del aire
+        url_mapa = "https://servpub.madrid.es/SIVCA_FTPAIRMA/#/prediccion-web"  # Sustituir por la URL exacta del visor
+
+        
+        components.html(
+                f'<iframe src="{url_mapa}" width="100%" height="600" frameborder="0"></iframe>',
+                height=620
+            )
+    '''
     with st.spinner("Consultando datos..."):
         #df = dm.get_historical_data(codigo_sel, pollutant_sel,fecha_inicio,fecha_fin)
         #df = dm.get_combined_data(codigo_sel, pollutant_sel, fecha_inicio, fecha_fin)
@@ -82,5 +106,5 @@ def render_content(pollutant_sel,codigo_sel,fecha_inicio,fecha_fin,seleccionados
             #fig_scatter = dibujar_scatter_rendimiento(df, 'no2', 'NO2')
             #st.plotly_chart(fig_scatter, use_container_width=True) # Mantener False para respetar el tamaño
             st.dataframe(df.head(2))
-
+    '''
  

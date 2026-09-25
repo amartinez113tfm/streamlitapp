@@ -545,6 +545,39 @@ def bloque48h(id_estacion_str):
     return df_final
 
 
+def bloque48Debug(id_estacion_str):
+    
+    """
+    Busca la ultima hora comun en las 3 colecciones y extrae las 48h consecutivas 
+    hacia atras desde ese punto temporal exacto.
+    """
+    MONGO_URI = st.secrets["MONGO_URI"]
+    try:
+        client = pymongo.MongoClient(MONGO_URI, connectTimeoutMS=5000)
+        db_aire = client["madrid_aire"]
+        db_trafico = client["trafico_madrid"]
+    except Exception as e:
+        st.error(f"Error de conexion con MongoDB: {e}")
+        return None
+
+    id_estacion_int = int(id_estacion_str)
+
+    # 1. Traemos un bloque generoso del historico de las 3 colecciones (ultimos 5 dias)
+    # No ponemos tildes en los comentarios de codigo
+    cursor_contam = db_aire["historico_contaminantes"].find({"estacion_id": id_estacion_str}).sort("timestamp", -1).limit(120)
+    cursor_meteo = db_aire["meteorologia"].find({"estacion_id": id_estacion_str}).sort("timestamp", -1).limit(120)
+    cursor_trafico = db_trafico["predicciones_horarias"].find({"estacion": id_estacion_int}).sort("timestamp", -1).limit(120)
+
+    df_contam = pd.DataFrame(list(cursor_contam))
+    df_meteo = pd.DataFrame(list(cursor_meteo))
+    df_trafico = pd.DataFrame(list(cursor_trafico))
+
+    if df_contam.empty or df_meteo.empty or df_trafico.empty:
+        st.error("Una o varias colecciones de MongoDB estan vacias. No se puede calcular el bloque.")
+        return None
+
+    return df_trafico
+
 
 def bloque48hCiclicas(id_estacion_str):
     """
